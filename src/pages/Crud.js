@@ -105,7 +105,8 @@ export default function Crud(){
         actors: '',
         director: '',
         rate: '',
-        year: ''
+        year: '',
+        backdrop_path:'',
     });
     const user = cookies.get('user')
     const Logout = () => {
@@ -114,7 +115,7 @@ export default function Crud(){
     }
     useEffect(()=>{
         if(!cookies.get('user')){
-            window.location.href="./"
+            window.location.href="./login"
         }
         Get()
     },[])
@@ -148,7 +149,7 @@ export default function Crud(){
      <div class="col-sm-11 text-white">     
     <h3 class="text-white">Movies</h3>
     </div>
-    <div class="col-sm-1"><a href="#" onClick={openModal} class="btn btn-primary">New {"  "}<i class="fa fa-plus" aria-hidden="true"></i></a></div>
+    <div class="col-sm-1"><a href="#" onClick={openModal} class="btn btn-danger">New {"  "}<i class="fa fa-plus" aria-hidden="true"></i></a></div>
     </div>
     </div>
       <table id="table" class="table table-dark">
@@ -172,7 +173,7 @@ export default function Crud(){
                 <td width="350px" class="overview">{movie.overview}</td>
                 <td>{movie.director}</td>
                 <td>{movie.actors}</td>
-                <td><span className="badge bg-dark">{movie.year}</span></td>
+                <td><span className="badge bg-success">{movie.year}</span></td>
                 <td width="160px">
                 <div class="actions">
                 <a target="_blank" class="btn btn-danger" href={movie.video}>Go To Trailer <i class="fa fa-play" aria-hidden="true"></i></a>
@@ -226,6 +227,10 @@ export default function Crud(){
             <label for="year">Año:</label>
             <input type="text" class="form-control" id="year" onChange={handleChange} name="year"/>
         </div>
+        <div class="form-group">
+            <label for="backdrop_path">Imagen de fondo:</label>
+            <input type="text" class="form-control" id="backdrop_path" onChange={handleChange} name="backdrop_path"/>
+        </div>
       </ModalBody>
       <ModalFooter>
         <button className="btn btn-dark"onClick={()=>Post()}>Insertar</button>{" "}
@@ -266,6 +271,10 @@ export default function Crud(){
         <div class="form-group">
             <label for="year">Año:</label>
             <input type="text" class="form-control" id="year" value={selectedMovie.year} onChange={handleChange} name="year"/>
+        </div>
+        <div class="form-group">
+            <label for="backdrop_path">Imagen de fondo:</label>
+            <input type="text" class="form-control" id="backdrop_path" value={selectedMovie.backdrop_path} onChange={handleChange} name="backdrop_path"/>
         </div>
       </ModalBody>
       <ModalFooter>

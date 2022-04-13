@@ -77,7 +77,7 @@ export default function Login(){
                 </div>
 
                 <div className="d-grid">
-                  <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
+                  <button className="btn btn-lg btn-danger btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
 
                 </div>
 

@@ -16,7 +16,11 @@ function Index() {
     const [trailer, setTrailer] = useState(null)
     const [movies, setMovies] = useState([])
     const [searchKey, setSearchKey] = useState("")
-    const [movie, setMovie] = useState({title: "Loading Movies"})
+    const [movie, setMovie] = useState({
+        title: "Loading Movies",
+        actors: '',
+        director: ''
+    })
 
     useEffect(() => {
         fetchMovies()
@@ -27,6 +31,15 @@ function Index() {
         const {data} = await axios.get(`${baseApi}`)
         console.log(data)
         setMovies(data)
+        setMovie(data[0])
+        fetchMovie(data[0]._id)
+
+    }
+
+    const filterSearch=(search)=>{
+        return function(x){
+            return (x.title.toString().toLowerCase().includes(search.toLowerCase()) || !search)
+        }
     }
 
     const fetchMovie = async (id) => {
@@ -49,7 +62,7 @@ function Index() {
     }
 
     const renderMovies = () => (
-        movies.map(movie => (
+        movies.filter(filterSearch(searchKey)).map(movie => (
             <Movie
                 selectMovie={selectMovie}
                 key={movie._id}
@@ -66,11 +79,11 @@ function Index() {
         <ul class="navbar-nav ">
         <li class="nav-item"> <a href="./" class="nav-link"> <i class="fa fa-home"></i> Home</a> </li>
             <li class="nav-item"> <a href="./admin" className="nav-link"><i class="fa fa-right-from-bracket"></i> PANEL</a></li>
-            <form className="form" onSubmit={fetchMovies}>
+            <div className="form" onSubmit={fetchMovies}>
                     <input className="search" type="text" id="search"
-                           onInput={(event) => setSearchKey(event.target.value)}/>
-                    <button className="submit-search" type="submit"><i className="fa fa-search"></i></button>
-                </form>
+                           onChange={(event) => setSearchKey(event.target.value)}/>
+                    <span className="submit-search"><i className="fa fa-search"></i></span>
+                </div>
         </ul>
     </div>
 </nav>
@@ -78,7 +91,7 @@ function Index() {
                 <main>
                     {movie ?
                         <div className="poster"
-                             style={{backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(${BACKDROP_PATH}${movie.backdrop_path})`}}>
+                             style={{backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(${movie.backdrop_path})`}}>
                             {playing ?
                                 <>
                                     <Youtube
@@ -108,11 +121,24 @@ function Index() {
                                 <div className="center-max-size">
                                     <div className="poster-content">
                                         <h1>{movie.title}</h1>
+                                        <br/>
                                         <p className="description">{movie.overview}</p>
+                                        <div className="actors">
+                                        {movie.director.split(",").map(dir=>{
+                                                return(
+                                                    <span className="badge bg-danger actor" >{dir}</span>
+                                                )
+                                            })}
+                                        {movie.actors.split(",").map(actor=>{
+                                                return(
+                                                    <span className="badge bg-dark actor" >{actor}</span>
+                                                )
+                                            })}    
+                                        </div>
                                         {trailer ?
                                             <button className={"button play-video"} onClick={() => setPlaying(true)}
-                                                    type="button">Play
-                                                Trailer</button>
+                                                    type="button">Reproducir
+                                                Trailer <i className="fa fa-play"></i></button>
                                             : 'Lo sentimos, no hay trailers disponibles'}
                                     </div>
                                 </div>
