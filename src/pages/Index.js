@@ -6,7 +6,7 @@ import Youtube from 'react-youtube'
 
 function Index() {
     const baseApi = 'http://localhost:4040'
-    const MOVIE_API = "https://api.themoviedb.org/3/"
+    const MOVIE_API = "http://api.themoviedb.org/3/"
     const SEARCH_API = MOVIE_API + "search/movie"
     const DISCOVER_API = MOVIE_API + "discover/movie"
     const API_KEY = "36b6e3ed1ea38d3e3f3962a18cb28aed"
@@ -20,55 +20,29 @@ function Index() {
 
     useEffect(() => {
         fetchMovies()
-        axios.get(baseApi+"/login/", { params: {username: 'ok', password:'1234'}}).then(response=>{
-            console.log(response.data)
-        }).catch(err=>{
-            console.log(err)
-        })
     }, [])
 
-    const fetchMovies = async (event) => {
-        if (event) {
-            event.preventDefault()
-        }
+    const fetchMovies = async () => {
 
-        const {data} = await axios.get(`${searchKey ? SEARCH_API : DISCOVER_API}`, {
-            params: {
-                api_key: API_KEY,
-                query: searchKey,
-                language:'es-MX'
-            }
-        })
-
-        console.log(data.results[0])
-        setMovies(data.results)
-        setMovie(data.results[0])
-
-        if (data.results.length) {
-            await fetchMovie(data.results[0].id)
-        }
+        const {data} = await axios.get(`${baseApi}`)
+        console.log(data)
+        setMovies(data)
     }
 
     const fetchMovie = async (id) => {
-        const {data} = await axios.get(`${MOVIE_API}movie/${id}`, {
-            params: {
-                api_key: API_KEY,
-                append_to_response: "videos",
-                language:'es-MX'
-            }
-        })
+        const {data} = await axios.get(`${baseApi}/movie/${id}`)
 
-        if (data.videos && data.videos.results) {
-            const trailer = data.videos.results.find(vid => vid.name === "Official Trailer")
-            setTrailer(trailer ? trailer : data.videos.results[0])
+        if (data.video) {
+            const trailer = data.video
+            const trailerID = trailer.split("https://youtu.be/")[1]
+            setTrailer(trailerID)
         }
-
         setMovie(data)
     }
 
 
     const selectMovie = (movie) => {
-        fetchMovie(movie.id)
+        fetchMovie(movie._id)
         setPlaying(false)
         setMovie(movie)
         window.scrollTo(0, 0)
@@ -78,7 +52,7 @@ function Index() {
         movies.map(movie => (
             <Movie
                 selectMovie={selectMovie}
-                key={movie.id}
+                key={movie._id}
                 movie={movie}
             />
         ))
@@ -86,14 +60,20 @@ function Index() {
 
     return (
         <div className="app">
-            <header className="center-max-size header">
-                <span className={"brand"}>ProyectoTrailersApp</span>
-                <form className="form" onSubmit={fetchMovies}>
+            <nav class="navbar navbar-expand-sm nav-crud text-white header navbar-dark navbar-crud"> <button class="navbar-toggler" type="button" data-target="#navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <span className="brand">ProyectoTrailersApp</span>
+    <div class="">
+        <ul class="navbar-nav ">
+        <li class="nav-item"> <a href="./" class="nav-link"> <i class="fa fa-home"></i> Home</a> </li>
+            <li class="nav-item"> <a href="./admin" className="nav-link"><i class="fa fa-right-from-bracket"></i> PANEL</a></li>
+            <form className="form" onSubmit={fetchMovies}>
                     <input className="search" type="text" id="search"
                            onInput={(event) => setSearchKey(event.target.value)}/>
                     <button className="submit-search" type="submit"><i className="fa fa-search"></i></button>
                 </form>
-            </header>
+        </ul>
+    </div>
+</nav>
             {movies.length ?
                 <main>
                     {movie ?
@@ -102,7 +82,7 @@ function Index() {
                             {playing ?
                                 <>
                                     <Youtube
-                                        videoId={trailer.key}
+                                        videoId={trailer}
                                         className={"youtube amru"}
                                         containerClassName={"youtube-container amru"}
                                         opts={

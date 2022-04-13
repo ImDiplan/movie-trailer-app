@@ -6,6 +6,9 @@
     color: #ffffff;
     
 }
+.table-title{
+    text-align: right !important;
+}
 
 .datatable{
     top: 20px;
@@ -19,6 +22,10 @@
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 15px;
+}
+
+.overview{
+    text-align: justify;
 }
 
 .header {
@@ -106,6 +113,19 @@ h1 {
     cursor: pointer;
     text-align: left;
     font-size: 16px;
+}
+.navbar-nav .nav-item .nav-link{
+    color: #ffffff;
+}
+.nav-crud{
+    background-color: #141314 !important;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-crud ul li a:hover{
+    color: #727272 !important;
 }
 
 .movie img {
