@@ -161,16 +161,17 @@ export default function Crud(){
     <div class="container">      
     <div class="row">
     <br/>
-    <div class="card datatable bg-dark">
+    <div class="card rounded shadow border-0 datatable">
     <div class="card-header table-header">
      <div class="row">
-     <div class="col-sm-11 text-white">     
-    <h3 class="text-white">Movies</h3>
+     <div class="col-sm-11">     
+    <h3 class="">Movies</h3>
     </div>
     <div class="col-sm-1"><a href="#" onClick={openModal} class="btn btn-danger">New {"  "}<i class="fa fa-plus" aria-hidden="true"></i></a></div>
     </div>
     </div>
-      <table id="table" class="table table-dark">
+    <div className="card-body p-5 bg-white rounded">
+      <table id="table" class="table table-card">
         <thead>
         <tr>
             <th>Title</th>
@@ -303,6 +304,6 @@ export default function Crud(){
       </ModalFooter>
     </Modal>
 </div>
-
+</div>
     )
 }
