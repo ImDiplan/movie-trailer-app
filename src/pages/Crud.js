@@ -13,7 +13,18 @@ export default function Crud(){
     const [modal,setModal] = useState(false);
     const [modalEdit,setModalEdit] = useState(false);
     const MySwal = withReactContent(Swal)
-
+    const emptyMovie = {
+        _id: '',
+        title: '',
+        poster: '',
+        overview:'',
+        video:'',
+        actors: '',
+        director: '',
+        rate: '',
+        year: '',
+        backdrop_path:'',
+    }
     const openModalEdit=(movie)=>{
         if(movie){
             setSelectedMovie(movie)
@@ -33,27 +44,34 @@ export default function Crud(){
             [name]:value
         })
     }
+    const isEmpty = (movie) =>{
+        if(movie.title == "" || movie.overview =="" || movie.poster ==""||movie.trailer==""||movie.director==""||movie.actors==""||movie.rate==""||movie.year==""||movie.backdrop_path==""){
+            return true
+        }
+    }
     const Post=async ()=>{
-        delete selectedMovie._id;
         console.log(selectedMovie)
-        debugger;
-        await axios.post(baseUrl+'/movie/new/',selectedMovie).then((response)=>{
-            console.log(response)
-            setMovies(movies.concat(response.data))
-            openModal();
-            MySwal.fire({
-                title:'Insertado satisfactoriamente!',
-                icon:'success',
-                button:'Ok'
-                })
-        }).catch(err=>{
-            MySwal.fire({
-                title:'Error de Servidor',
-                icon:'error',
-                text:err,
-                button:'Ok'
-                })  
-        })
+        if(!isEmpty(selectedMovie)){
+            delete selectedMovie._id;
+            await axios.post(baseUrl+'/movie/new/',selectedMovie).then((response)=>{
+                console.log(response)
+                setMovies(movies.concat(response.data))
+                openModal();
+                MySwal.fire({
+                    title:'Insertado satisfactoriamente!',
+                    icon:'success',
+                    button:'Ok'
+                    })
+            }).catch(err=>{
+                MySwal.fire({
+                    title:'Error de Servidor',
+                    icon:'error',
+                    text:err,
+                    button:'Ok'
+                    })  
+            })
+        }
+        
     }
 
     const Update=async ()=>{
@@ -194,10 +212,11 @@ export default function Crud(){
 </div>
 <Modal isOpen = {modal} >
       <ModalHeader>Insertar nuevo producto</ModalHeader>
+      <form>
       <ModalBody>
       <div class="form-group">
             <label for="title">Title:</label>
-            <input type="text" class="form-control" id="title" onChange={handleChange} name="title"/>
+            <input type="text" class="form-control" id="title" onChange={handleChange} name="title" required/>
         </div>
         <div class="form-group">
             <label for="overview">Overview:</label>
@@ -213,29 +232,30 @@ export default function Crud(){
         </div>
         <div class="form-group">
             <label for="director">Director:</label>
-            <input type="text" class="form-control" id="director" onChange={handleChange} name="director"/>
+            <input type="text" class="form-control" id="director" onChange={handleChange} name="director" required/>
         </div>
         <div class="form-group">
             <label for="actors">Actores:</label>
-            <input type="text" class="form-control" id="actors" onChange={handleChange} name="actors"/>
+            <input type="text" class="form-control" id="actors" onChange={handleChange} name="actors" required/>
         </div>
         <div class="form-group">
             <label for="rate">Valoración:</label>
-            <input type="number" min="1" max="10" class="form-control" id="rate" onChange={handleChange} name="rate"/>
+            <input type="number" min="1" max="10" class="form-control" id="rate" onChange={handleChange} name="rate" required/>
         </div>
         <div class="form-group">
             <label for="year">Año:</label>
-            <input type="text" class="form-control" id="year" onChange={handleChange} name="year"/>
+            <input type="text" class="form-control" id="year" onChange={handleChange} name="year" required/>
         </div>
         <div class="form-group">
             <label for="backdrop_path">Imagen de fondo:</label>
-            <input type="text" class="form-control" id="backdrop_path" onChange={handleChange} name="backdrop_path"/>
+            <input type="text" class="form-control" id="backdrop_path" onChange={handleChange} name="backdrop_path" required/>
         </div>
       </ModalBody>
       <ModalFooter>
         <button className="btn btn-dark"onClick={()=>Post()}>Insertar</button>{" "}
         <button className="btn btn-danger" onClick={()=>openModal()}>Cancelar</button>
       </ModalFooter>
+      </form>
     </Modal>
     <Modal isOpen = {modalEdit} >
       <ModalHeader>Actualizar película</ModalHeader>

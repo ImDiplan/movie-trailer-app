@@ -14,31 +14,32 @@ export default function Login(){
     const cookies = new Cookies();
     const user = cookies.get('user')
     const MySwal = withReactContent(Swal)
-
     useEffect(()=>{
       if(user){
           window.location.href = '/admin'
       }
     }, [])
+
     const ValidateUser = (username, password) => {
-        console.log(username, password)
+      if(errors !== {}){
         axios.get(baseUrl, {params: {username, password}}).then(response=>{
-            const exist = response.data.exist;
-            console.log(response.data)
-            if(exist){
-                cookies.set('user', username, {path: "/"})
-                window.location.href = '/admin'
-            } else {
-              MySwal.fire({
-                title:'Error de Autenticación',
-                icon:'warning',
-                text:'Usuario o contraseña incorrectos',
-                button:'Ok'
-                })
-            }    
-        }).catch(err=>{
-            console.log(err)
-        })
+          const exist = response.data.exist;
+          console.log(response.data)
+          if(exist){
+              cookies.set('user', username, {path: "/"})
+              window.location.href = '/admin'
+          } else {
+            MySwal.fire({
+              title:'Error de Autenticación',
+              icon:'warning',
+              text:'Usuario o contraseña incorrectos',
+              button:'Ok'
+              })
+          }    
+      }).catch(err=>{
+          console.log(err)
+      }) 
+      } 
     };
     return (
 <div className="container-fluid ps-md-0">
@@ -58,9 +59,14 @@ export default function Login(){
                       required: {
                           value: true,
                           message: "El campo es requerido"
-                      }   
+                      },
+                      minLength:{
+                        value: 2,
+                          message: "El usuario debe tener al menos 2 caracteres",
+                      }  
                   })} className="form-control" id="floatingInput" placeholder="name@example.com" />
                   <label for="floatingInput">Nombre de Usuario</label>
+                  {errors.username && <span className='errors text-danger'>{errors.username.message + " "} <i class="fa-solid fa-circle-exclamation icon-inline"></i></span>}
                 </div>
                 <div className="form-floating mb-3">
                   <input type="password" {...register("password", {
@@ -74,6 +80,8 @@ export default function Login(){
                       }   
                   })} className="form-control" id="floatingPassword" placeholder="Password" />
                   <label for="floatingPassword">Contraseña</label>
+                  {errors.password && <span className='errors text-danger'>{errors.password.message + " "} <i class="fa-solid fa-circle-exclamation icon-inline"></i></span>}
+
                 </div>
 
                 <div className="d-grid">
